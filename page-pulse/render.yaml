@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: page-pulse
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: CACHE_TTL_SECONDS
+        value: 300
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: page-pulse-redis
+          property: connectionString
+
+  - type: keyvalue
+    name: page-pulse-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
